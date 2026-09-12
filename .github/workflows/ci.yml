@@ -20,7 +20,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run verify
+      - run: npm run check
+      - run: cd client && npm run build
 
   deploy-vercel:
     name: Deploy to Vercel

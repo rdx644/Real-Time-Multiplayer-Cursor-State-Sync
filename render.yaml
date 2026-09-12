@@ -2,7 +2,7 @@ services:
   - type: web
     name: multiplayer-cursor-frontend
     runtime: static
-    buildCommand: npm run build -w client
+    buildCommand: cd client && npm run build
     staticPublishPath: client/dist
     pullRequestPreviewsEnabled: true
     envVars:
