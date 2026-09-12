@@ -1,0 +1,10 @@
+{
+  "name": "@multiplayer-sync/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "check": "tsc -p tsconfig.json --noEmit"
+  }
+}

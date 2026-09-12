@@ -1,0 +1,58 @@
+:root {
+  color: #e8edf8;
+  background: #080c17;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button { font: inherit; }
+
+.app-shell {
+  width: min(1120px, calc(100vw - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.topbar, .meta-row, .debug-panel {
+  border: 1px solid rgba(148, 163, 184, .16);
+  background: rgba(15, 23, 42, .72);
+  backdrop-filter: blur(14px);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-radius: 18px 18px 0 0;
+  padding: 22px 26px;
+}
+
+.eyebrow { color: #80c7ff; font-size: .72rem; font-weight: 800; letter-spacing: .14em; margin: 0 0 4px; }
+h1 { font-size: clamp(1.35rem, 3vw, 2rem); line-height: 1.15; margin: 0; letter-spacing: -.03em; }
+.connection { display: flex; align-items: center; gap: 8px; font-size: .78rem; font-weight: 800; letter-spacing: .05em; }
+.status-dot { width: 9px; height: 9px; border-radius: 50%; background: #fbbf24; box-shadow: 0 0 14px currentColor; }
+.online { color: #6ee7b7; }.online .status-dot { background: #34d399; }.offline { color: #fbbf24; }
+
+.meta-row { display: flex; align-items: center; gap: 24px; padding: 13px 26px; border-top: 0; color: #aab6ca; font-size: .84rem; }
+.meta-row strong { color: #f1f5f9; font-size: .66rem; letter-spacing: .09em; margin-right: 7px; }
+.meta-row button { margin-left: auto; border: 1px solid rgba(244, 114, 182, .45); border-radius: 9px; background: rgba(244, 114, 182, .13); color: #f9a8d4; padding: 7px 10px; cursor: pointer; font-weight: 700; }
+.meta-row button:disabled { cursor: not-allowed; opacity: .45; }
+
+.surface-wrap { position: relative; height: min(62vh, 620px); min-height: 360px; border: 1px solid rgba(148, 163, 184, .16); border-top: 0; background: radial-gradient(circle at 50% 30%, #172448, #0c1224 62%, #080c17); overflow: hidden; }
+.sync-surface { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+.empty-state { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; color: #94a3b8; font-size: .9rem; text-align: center; pointer-events: none; }
+
+.debug-panel { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; border-top: 0; border-radius: 0 0 18px 18px; overflow: hidden; }
+.debug-panel div { min-width: 0; padding: 14px 12px; background: rgba(15, 23, 42, .66); }
+.debug-panel span { display: block; color: #8fa1bd; font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.debug-panel strong { display: block; margin-top: 4px; font-size: .9rem; color: #eff6ff; }
+.protocol-error { color: #fbbf24; font-size: .78rem; margin: 12px 2px; }
+
+@media (max-width: 720px) {
+  .app-shell { width: 100%; padding: 0; }
+  .topbar { border-radius: 0; padding: 20px; }.meta-row { flex-wrap: wrap; gap: 12px; padding: 12px 20px; }.meta-row button { margin-left: 0; }
+  .surface-wrap { min-height: 320px; height: 55vh; }.debug-panel { grid-template-columns: repeat(3, minmax(0, 1fr)); border-radius: 0; }
+}
