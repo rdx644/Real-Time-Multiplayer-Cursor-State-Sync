@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: multiplayer-cursor-frontend
+    runtime: static
+    buildCommand: npm run build -w client
+    staticPublishPath: client/dist
+    pullRequestPreviewsEnabled: true
+    envVars:
+      - key: VITE_WS_URL
+        sync: false
