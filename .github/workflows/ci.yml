@@ -23,25 +23,6 @@ jobs:
       - run: npm run check
       - run: cd client && npm run build
 
-  deploy-vercel:
-    name: Deploy to Vercel
-    needs: verify
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: amondnet/vercel-action@v25
-        if: ${{ env.VERCEL_TOKEN != '' }}
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-        env:
-          VITE_WS_URL: ${{ secrets.WS_URL }}
-
   deploy-render:
     name: Deploy to Render
     needs: verify
