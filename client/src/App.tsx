@@ -7,7 +7,7 @@ import type { ConnectionStatus, Participant, SyncMetrics } from "./types.js";
 
 const SESSION_KEY_PREFIX = "multiplayer-sync.session.";
 const EMPTY_METRICS: SyncMetrics = {
-  rttMs: null, jitterMs: null, txRate: 0, rxRate: 0, staleDrops: 0, reconnects: 0, cursorRateHz: 30
+  rttMs: null, smoothedRttMs: null, jitterMs: null, txRate: 0, rxRate: 0, staleDrops: 0, reconnects: 0, cursorRateHz: 30, interpolationDelayMs: 100
 };
 
 function roomFromLocation(): string {
@@ -72,6 +72,7 @@ export default function App() {
       onMetrics(nextMetrics) {
         setMetrics(nextMetrics);
         throttlerRef.current?.setRateHz(cursorRateForRtt(nextMetrics.rttMs));
+        storeRef.current.setInterpolationDelay(nextMetrics.interpolationDelayMs);
       },
       onProtocolError: setProtocolError,
       onMessage(message) {
@@ -172,10 +173,12 @@ export default function App() {
 
       <section className="debug-panel" aria-label="Synchronization telemetry">
         <div><span>RTT</span><strong>{metric(metrics.rttMs)}</strong></div>
+        <div><span>Smoothed</span><strong>{metric(metrics.smoothedRttMs)}</strong></div>
         <div><span>Jitter</span><strong>{metric(metrics.jitterMs)}</strong></div>
         <div><span>TX</span><strong>{metrics.txRate}/s</strong></div>
         <div><span>RX</span><strong>{metrics.rxRate}/s</strong></div>
         <div><span>Rate</span><strong>{metrics.cursorRateHz}Hz</strong></div>
+        <div><span>Interp</span><strong>{metrics.interpolationDelayMs}ms</strong></div>
         <div><span>Stale drops</span><strong>{metrics.staleDrops}</strong></div>
         <div><span>Reconnects</span><strong>{metrics.reconnects}</strong></div>
       </section>

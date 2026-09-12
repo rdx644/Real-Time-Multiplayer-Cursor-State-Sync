@@ -12,6 +12,15 @@ export function cursorRateForRtt(rttMs: number | null): number {
   return 15;
 }
 
+export function interpolationDelayForRtt(rttMs: number | null): number {
+  if (rttMs === null || !Number.isFinite(rttMs) || rttMs < 0) return 100;
+  if (rttMs < 50) return 50;
+  if (rttMs < 100) return 70;
+  if (rttMs < 200) return 100;
+  if (rttMs < 300) return 120;
+  return 140;
+}
+
 /**
  * Latest-value throttling: under a pointer-event burst, only the newest point
  * is emitted when the current rate slot opens. It never queues an old path.

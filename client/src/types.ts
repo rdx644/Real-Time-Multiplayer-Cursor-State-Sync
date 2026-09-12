@@ -10,10 +10,12 @@ export type ConnectionStatus = "CONNECTING" | "SYNCHRONIZING" | "CONNECTED" | "R
 
 export interface SyncMetrics {
   rttMs: number | null;
+  smoothedRttMs: number | null;
   jitterMs: number | null;
   txRate: number;
   rxRate: number;
   staleDrops: number;
   reconnects: number;
   cursorRateHz: number;
+  interpolationDelayMs: number;
 }

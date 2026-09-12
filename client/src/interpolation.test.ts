@@ -26,6 +26,14 @@ describe("RemoteCursorBuffer", () => {
     expect(buffer.positionAt(1_000)).toEqual({ x: 50, y: 0 });
   });
 
+  it("bounds interpolation delay to 50-140ms range", () => {
+    const buffer = new RemoteCursorBuffer(100);
+    buffer.setInterpolationDelay(10);
+    expect(buffer.positionAt(100)).toBeDefined();
+    buffer.setInterpolationDelay(200);
+    expect(buffer.positionAt(100)).toBeDefined();
+  });
+
   it("removes cursors that are no longer present", () => {
     const store = new RemoteCursorStore();
     store.push("a", { x: 1, y: 1, seq: 1, receivedAt: 0, serverTimestamp: 0 });

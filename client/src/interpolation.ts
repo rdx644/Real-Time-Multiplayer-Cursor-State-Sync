@@ -19,7 +19,7 @@ export class RemoteCursorBuffer {
   private readonly samples: PositionSample[] = [];
 
   constructor(
-    private readonly interpolationDelayMs = 100,
+    private interpolationDelayMs = 100,
     private readonly maxSamples = 8,
     private readonly extrapolationLimitMs = 120
   ) {}
@@ -31,6 +31,10 @@ export class RemoteCursorBuffer {
     this.samples.push({ ...sample, receivedAt });
     if (this.samples.length > this.maxSamples) this.samples.splice(0, this.samples.length - this.maxSamples);
     return true;
+  }
+
+  setInterpolationDelay(delayMs: number): void {
+    this.interpolationDelayMs = Math.min(140, Math.max(50, delayMs));
   }
 
   positionAt(now: number): Point | null {
@@ -98,6 +102,12 @@ export class RemoteCursorStore {
 
   clear(): void {
     this.buffers.clear();
+  }
+
+  setInterpolationDelay(delayMs: number): void {
+    for (const buffer of this.buffers.values()) {
+      buffer.setInterpolationDelay(delayMs);
+    }
   }
 
   positionsAt(now: number): RenderedCursor[] {

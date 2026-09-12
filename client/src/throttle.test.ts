@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { CursorThrottler, cursorRateForRtt } from "./throttle.js";
+import { CursorThrottler, cursorRateForRtt, interpolationDelayForRtt } from "./throttle.js";
 
 describe("CursorThrottler", () => {
   it("sends the latest point at a bounded rate", () => {
@@ -23,5 +23,29 @@ describe("CursorThrottler", () => {
     expect(cursorRateForRtt(75)).toBe(25);
     expect(cursorRateForRtt(150)).toBe(20);
     expect(cursorRateForRtt(500)).toBe(15);
+  });
+});
+
+describe("interpolationDelayForRtt", () => {
+  it.each([
+    [null, 100],
+    [0, 50],
+    [49, 50],
+    [50, 70],
+    [99, 70],
+    [100, 100],
+    [199, 100],
+    [200, 120],
+    [299, 120],
+    [300, 140],
+    [1000, 140]
+  ])("maps %s ms RTT to %s ms delay", (rtt, expected) => {
+    expect(interpolationDelayForRtt(rtt as number | null)).toBe(expected);
+  });
+
+  it("rejects invalid input and returns safe default", () => {
+    expect(interpolationDelayForRtt(NaN)).toBe(100);
+    expect(interpolationDelayForRtt(Infinity)).toBe(100);
+    expect(interpolationDelayForRtt(-10)).toBe(100);
   });
 });

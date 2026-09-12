@@ -5,7 +5,7 @@ import {
   type ClientMessage,
   type ServerMessage
 } from "./protocol.js";
-import { cursorRateForRtt, type Point } from "./throttle.js";
+import { cursorRateForRtt, interpolationDelayForRtt, type Point } from "./throttle.js";
 import type { ConnectionStatus, SyncMetrics } from "./types.js";
 
 export interface PersistedSession {
@@ -37,12 +37,14 @@ const METRIC_EMIT_INTERVAL_MS = 250;
 
 const initialMetrics = (): SyncMetrics => ({
   rttMs: null,
+  smoothedRttMs: null,
   jitterMs: null,
   txRate: 0,
   rxRate: 0,
   staleDrops: 0,
   reconnects: 0,
-  cursorRateHz: 30
+  cursorRateHz: 30,
+  interpolationDelayMs: 100
 });
 
 /**
@@ -215,7 +217,15 @@ export class RealtimeConnection {
     const previous = this.metrics.rttMs;
     const jitterMs = previous === null ? 0 : Math.abs(rttMs - previous);
     const cursorRateHz = cursorRateForRtt(rttMs);
-    this.metrics = { ...this.metrics, rttMs, jitterMs, cursorRateHz };
+
+    // Exponential moving average for RTT to prevent oscillation
+    const alpha = 0.2;
+    const prevSmoothed = this.metrics.smoothedRttMs;
+    const smoothedRttMs = prevSmoothed === null ? rttMs : alpha * rttMs + (1 - alpha) * prevSmoothed;
+
+    const interpolationDelayMs = interpolationDelayForRtt(smoothedRttMs);
+
+    this.metrics = { ...this.metrics, rttMs, smoothedRttMs, jitterMs, cursorRateHz, interpolationDelayMs };
     this.emitMetrics();
   }
 
